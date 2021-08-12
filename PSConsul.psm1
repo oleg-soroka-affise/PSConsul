@@ -11,8 +11,8 @@ function Add-Watcher
     (
         # Name of watcher / service
         [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=0)]
+                ValueFromPipelineByPropertyName=$true,
+                Position=0)]
         [string]$Name,
 
         # Consul key to watch
@@ -58,11 +58,11 @@ function Add-Watcher
 
 <#
 .Synopsis
-   Get Consul keys
+    Get Consul keys
 .DESCRIPTION
-   Returns array of Consul keys
+    Returns array of Consul keys
 .EXAMPLE
-   Get-ConsulKeys -Path /test/folder/key1 -Server http://22.33.44.55:8500
+    Get-ConsulKeys -Path /test/folder/key1 -Server http://22.33.44.55:8500
 #>
 function Get-ConsulKeys
 {
@@ -82,36 +82,36 @@ function Get-ConsulKeys
         [string]$Token = $env:CONSUL_TOKEN
     )
 
-        if ($env:Consul)  { $Server=$env:Consul }
-        if ($Path[0] -ne '/') { $Path = '/' + $Path }
-        $URI = $Server + '/v1/kv' + $Path + '?recurse'
-        if ($Token)  { $URI += "&token=$token" }
-        try {
-            $data = Invoke-RestMethod -Uri $Uri 
-			$data | Sort-Object Key | ForEach-Object {
-				$_ | select Key, @{Name="Value"; Expression = {[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String( $_.Value ))}}
-			}
+    if ($env:Consul)  { $Server=$env:Consul }
+    if ($Path[0] -ne '/') { $Path = '/' + $Path }
+    $URI = $Server + '/v1/kv' + $Path + '?recurse'
+    if ($Token)  { $URI += "&token=$token" }
+    try {
+        $data = Invoke-RestMethod -Uri $Uri 
+        $data | Sort-Object Key | ForEach-Object {
+            $_ | select Key, @{Name="Value"; Expression = {[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String( $_.Value ))}}
         }
-        catch {
-            Write-Error $_
-       }
+    }
+    catch {
+        Write-Error $_
+    }
 
 }
 
 
 <#
 .Synopsis
-   Get info of registered node
+    Get info of registered node
 .DESCRIPTION
-   Get info of registered node
+    Get info of registered node
 .EXAMPLE
-   $env:Consul = 'http://22.33.44.55:8500' #defaults to localhost
-   Get-ConsulNode node1
+    $env:Consul = 'http://22.33.44.55:8500' #defaults to localhost
+    Get-ConsulNode node1
 .EXAMPLE
-   $x = Get-ConsulNode WEB01
-   $x.Services.psobject.Properties.value
+    $x = Get-ConsulNode WEB01
+    $x.Services.psobject.Properties.value
 
-   Get tag info
+    Get tag info
 #>
 function Get-ConsulNode
 {
@@ -126,21 +126,21 @@ function Get-ConsulNode
         [string]$Server = 'http://localhost:8500'
     )
 
-        if ($env:Consul)  { 
-            $Server=$env:Consul 
-        }
-        $URI = $Server + '/v1/catalog/node/' + $Node
+    if ($env:Consul)  { 
+        $Server=$env:Consul 
+    }
+    $URI = $Server + '/v1/catalog/node/' + $Node
 
-        try {
-            $data = Invoke-RestMethod -Uri $Uri
-            if ($data -eq 'null') { throw } 
-            return $data
+    try {
+        $data = Invoke-RestMethod -Uri $Uri
+        if ($data -eq 'null') { throw } 
+        return $data
 
-        }
-        catch {
-            $e = new-object System.Management.Automation.ErrorRecord "Node `"$Node`" not found", "Y", ([System.Management.Automation.ErrorCategory]::NotSpecified), "Z"
-            $PSCmdlet.WriteError( $e )
-       }
+    }
+    catch {
+        $e = new-object System.Management.Automation.ErrorRecord "Node `"$Node`" not found", "Y", ([System.Management.Automation.ErrorCategory]::NotSpecified), "Z"
+        $PSCmdlet.WriteError( $e )
+    }
 
 }
 
@@ -268,18 +268,18 @@ function Get-ConsulServices
         catch {
             $e = new-object System.Management.Automation.ErrorRecord "", "", ([System.Management.Automation.ErrorCategory]::NotSpecified), ""
             $PSCmdlet.WriteError( $e )
-       }
+        }
 
 }
 
 <#
 .Synopsis
-   Get list of ACL tokens
+    Get list of ACL tokens
 .DESCRIPTION
-   Get list of ACL tokens
+    Get list of ACL tokens
 .EXAMPLE
-   $env:Consul = 'http://22.33.44.55:8500' #defaults to localhost
-   Get-ConsulToken
+    $env:Consul = 'http://22.33.44.55:8500' #defaults to localhost
+    Get-ConsulToken
 
 #>
 function Get-ConsulToken
@@ -312,21 +312,21 @@ function Get-ConsulToken
         catch {
             $e = new-object System.Management.Automation.ErrorRecord "", "", ([System.Management.Automation.ErrorCategory]::NotSpecified), ""
             $PSCmdlet.WriteError( $e )
-       }
+        }
 
 }
 
 
 <#
 .Synopsis
-   Get value from Consul key
+    Get value from Consul key
 .DESCRIPTION
-   Get value from Consul key
+    Get value from Consul key
 .EXAMPLE
-   Get-ConsulValue -Key /test/folder/key1 -Server http://22.33.44.55:8500
+    Get-ConsulValue -Key /test/folder/key1 -Server http://22.33.44.55:8500
 .EXAMPLE
-   $env:Consul = 'http://22.33.44.55:8500' #defaults to localhost
-   Get-ConsulValue /test/folder/key1
+    $env:Consul = 'http://22.33.44.55:8500' #defaults to localhost
+    Get-ConsulValue /test/folder/key1
 .EXAMPLE
     if ( $y = Get-ConsulValue myapp/database/url -ErrorAction SilentlyContinue ) { $y } else { echo "Error" }
 #>
@@ -359,7 +359,7 @@ function Get-ConsulValue
         }
         catch {
             Write-Error $_
-       }
+        }
 
 }
 
@@ -367,16 +367,16 @@ function Get-ConsulValue
 
 <#
 .Synopsis
-   Remove value from Consul key
+    Remove value from Consul key
 .DESCRIPTION
-   Remove value from Consul key
+    Remove value from Consul key
 .EXAMPLE
-   Remove-ConsulValue -Path /test/folder/key1 -Server http://22.33.44.55:8500
+    Remove-ConsulValue -Path /test/folder/key1 -Server http://22.33.44.55:8500
 .EXAMPLE
-   $env:Consul = 'http://22.33.44.55:8500' #defaults to localhost
-   Remove-ConsulValue /test/folder/ -Recurse
+    $env:Consul = 'http://22.33.44.55:8500' #defaults to localhost
+    Remove-ConsulValue /test/folder/ -Recurse
 
-   !!! Deletes ALL matching keys _RECURSIVELY_!
+    !!! Deletes ALL matching keys _RECURSIVELY_!
 #>
 function Remove-ConsulKey
 {
@@ -414,7 +414,7 @@ function Remove-ConsulKey
         }
         catch {
             Write-Error $_
-       }
+        }
     }
 
 }
@@ -422,14 +422,14 @@ function Remove-ConsulKey
 
 <#
 .Synopsis
-   Set value for Consul key
+    Set value for Consul key
 .DESCRIPTION
-   Set value for Consul key
+    Set value for Consul key
 .EXAMPLE
-   Set-ConsulValue -Key /test/folder/key1 -Value 'Val' -Server http://22.33.44.55:8500
+    Set-ConsulValue -Key /test/folder/key1 -Value 'Val' -Server http://22.33.44.55:8500
 .EXAMPLE
-   $env:Consul = 'http://22.33.44.55:8500' #defaults to localhost
-   Get-ConsulValue /test/folder/key1
+    $env:Consul = 'http://22.33.44.55:8500' #defaults to localhost
+    Get-ConsulValue /test/folder/key1
 #>
 function Set-ConsulValue
 {
@@ -463,23 +463,23 @@ function Set-ConsulValue
         }
         catch {
             Write-Error $_
-       }
+        }
 
 }
 
 
 <#
 .Synopsis
-   Register consul service
+    Register consul service
 .DESCRIPTION
-   Register new service with /v1/agent/service/register endpoint, or update existing one
+    Register new service with /v1/agent/service/register endpoint, or update existing one
 .EXAMPLE
-   Register-ConsulService -Name wwww -Port 443 -Tags @("nginx","wap") -Server http://22.33.44.55:8500    
-   Register-ConsulService -Name iis -Port 443 -Server http://22.33.44.55:8500
-   Register-ConsulService -Name web -Tags @("nginx","test") -Server http://22.33.44.55:8500
+    Register-ConsulService -Name wwww -Port 443 -Tags @("nginx","wap") -Server http://22.33.44.55:8500    
+    Register-ConsulService -Name iis -Port 443 -Server http://22.33.44.55:8500
+    Register-ConsulService -Name web -Tags @("nginx","test") -Server http://22.33.44.55:8500
 .EXAMPLE
-   $env:Consul = 'http://22.33.44.55:8500' #defaults to localhost
-   Register-ConsulService -Name rdc-multitenant-service1 -Port 443
+    $env:Consul = 'http://22.33.44.55:8500' #defaults to localhost
+    Register-ConsulService -Name rdc-multitenant-service1 -Port 443
 #>
 function Register-ConsulService
 {
@@ -503,9 +503,9 @@ function Register-ConsulService
         if ($env:Consul)  { $Server=$env:Consul } 
         $URI = $Server + '/v1/agent/service/register'
         $RAW_Body = @{
-		    Name = $Name
-		  	Port = $Port
-		  	Tags = $Tags			
+            Name = $Name
+            Port = $Port
+            Tags = $Tags			
 		}
 		$Body = $RAW_Body | ConvertTo-Json
         try {
@@ -521,11 +521,11 @@ function Register-ConsulService
 
 <#
 .Synopsis
-   Remove consule service
+    Remove consule service
 .DESCRIPTION
-   Remove consule service by ID
+    Remove consule service by ID
 .EXAMPLE
-   Remove-ConsulService -ServiceID serviceid -Server http://22.33.44.55:8500
+    Remove-ConsulService -ServiceID serviceid -Server http://22.33.44.55:8500
 #>
 function Remove-ConsulService
 {
@@ -540,26 +540,26 @@ function Remove-ConsulService
     )
 
     if ($env:Consul)  { $Server=$env:Consul } 
-        $URI = $Server + '/v1/agent/service/deregister/'+$ServiceID
-        try {
-			$data = Invoke-RestMethod -Uri $Uri -Method Get 
-			Write-Verbose $data
-        }
-        catch {
-            Write-Error $_
-        }
+    $URI = $Server + '/v1/agent/service/deregister/'+$ServiceID
+    try {
+        $data = Invoke-RestMethod -Uri $Uri -Method Get 
+        Write-Verbose $data
+    }
+    catch {
+        Write-Error $_
+    }
 
 }
 
 
 <#
 .Synopsis
-   Set/remove service maintenance
+    Set/remove service maintenance
 .DESCRIPTION
-   Set or remove service maintenance mode, Reason parameter is mandatory, even Consul does not require it)
+    Set or remove service maintenance mode, Reason parameter is mandatory, even Consul does not require it)
 .EXAMPLE
-   Set-ConsulServiceMaintenance -ServiceID www -Enable $true - Reason 'Reconfiguring backend'    
-   Set-ConsulServiceMaintenance -ServiceID www -Enable $False - Reason 'Maintenance completed'
+    Set-ConsulServiceMaintenance -ServiceID www -Enable $true - Reason 'Reconfiguring backend'    
+    Set-ConsulServiceMaintenance -ServiceID www -Enable $False - Reason 'Maintenance completed'
 #>
 function Set-ConsulServiceMaintenance
 {
@@ -596,13 +596,13 @@ function Set-ConsulServiceMaintenance
 
 <#
 .Synopsis
-   Register consul check
+    Register consul check
 .DESCRIPTION
-   Register new service with /v1/agent/service/register endpoint, or update existing one
+    Register new service with /v1/agent/service/register endpoint, or update existing one
 .EXAMPLE
-   Register-ConsulCheck -Name Test -Type HTTP -Value "https://api.ipify.org/" -Interval "60s" -Notes "Test check" 
+    Register-ConsulCheck -Name Test -Type HTTP -Value "https://api.ipify.org/" -Interval "60s" -Notes "Test check" 
 .EXAMPLE
-   Register-ConsulCheck -Name "My Script" -Type Script -Value "c:\check.bat" -Interval "600s" -ID "myscript"
+    Register-ConsulCheck -Name "My Script" -Type Script -Value "c:\check.bat" -Interval "600s" -ID "myscript"
 #>
 function Register-ConsulCheck
 {
@@ -638,20 +638,20 @@ function Register-ConsulCheck
     
         if ($env:Consul)  { $Server=$env:Consul } 
         $URI = $Server + '/v1/agent/check/register'
-     
+
         $RAW_Body = @{
             ID    = $ID
-		    Name  = $Name
-		  	$Type = $Value
+            Name  = $Name
+            $Type = $Value
             Interval = $Interval
-		}
+        }
 		if ($ServiceID) { $RAW_Body.Add("ServiceID", $ServiceID) }
 		if ($Notes)     { $RAW_Body.Add("Notes", $Notes) }
         
 		$Body = $RAW_Body | ConvertTo-Json
 
         try {
-			$data = Invoke-RestMethod -Uri $Uri -Method Put -Body $Body
+            $data = Invoke-RestMethod -Uri $Uri -Method Put -Body $Body
         }
         catch {
             Write-Error $_
@@ -661,11 +661,11 @@ function Register-ConsulCheck
 
 <#
 .Synopsis
-   Remove consul check
+    Remove consul check
 .DESCRIPTION
-   Remove check with /v1/agent/check/deregister/<ID> endpoint
+    Remove check with /v1/agent/check/deregister/<ID> endpoint
 .EXAMPLE
-   Remove-ConsulCheck -ID "myscript"
+    Remove-ConsulCheck -ID "myscript"
 #>
 function Remove-ConsulCheck
 {
@@ -683,10 +683,9 @@ function Remove-ConsulCheck
         if ($env:Consul)  { $Server=$env:Consul } 
 
         $URI = $Server + '/v1/agent/check/deregister/' + $ID
-     
 
         try {
-			$data = Invoke-RestMethod -Uri $Uri
+            $data = Invoke-RestMethod -Uri $Uri
         }
         catch {
             Write-Error $_
