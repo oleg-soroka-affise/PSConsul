@@ -1,6 +1,4 @@
-#
-Set-StrictMode -Version 2
-
+#Set-StrictMode -Version 2
 
 function Add-Watcher
 {
