@@ -540,7 +540,7 @@ function Remove-ConsulService
     if ($env:Consul)  { $Server=$env:Consul } 
     $URI = $Server + '/v1/agent/service/deregister/'+$ServiceID
     try {
-        $data = Invoke-RestMethod -Uri $Uri -Method Get 
+        $data = Invoke-RestMethod -Uri $Uri -Method Put
         Write-Verbose $data
     }
     catch {
