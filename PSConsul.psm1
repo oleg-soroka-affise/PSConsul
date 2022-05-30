@@ -87,7 +87,7 @@ function Get-ConsulKeys
     try {
         $data = Invoke-RestMethod -Uri $Uri 
         $data | Sort-Object Key | ForEach-Object {
-            $_ | select Key, @{Name="Value"; Expression = {[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String( $_.Value ))}}
+            $_ | Select-Object Key, @{Name="Value"; Expression = {[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String( $_.Value ))}}
         }
     }
     catch {
